@@ -1,25 +1,24 @@
 describe("$flash", function() {
   var rootScope;
+  var flash;
   var $injector = angular.injector(['ng', 'Notification']);
 
   beforeEach(function(){
     $injector.invoke(function($rootScope, $flash){
       rootScope = $rootScope;
-      $flash.notify('info', 'message', 'element');
-    })
+      flash = $flash;
+    });
   });
 
-  it("should set the notification message on the root scope", function(){
-    expect(rootScope.notification.message).toEqual('message');
+  it("should emit event:ngNotification",function(){
+    spyOn(rootScope, '$emit').andCallThrough();
+    flash.notify('info', 'message', 'element', 'callback');
+
+    expect(rootScope.$emit).toHaveBeenCalledWith('event:ngNotification',
+      {level: 'info', message: 'message', element: 'element', callback: 'callback'});
   });
 
-  it("should set the notification level on the root scope", function(){
-    expect(rootScope.notification.level).toEqual('info');
-  });
-  
-  it("should set the notification element on the root scope", function(){
-    expect(rootScope.notification.element).toEqual('element');
-  });
+ 
 });
 
 
@@ -49,14 +48,6 @@ describe("ngNotice", function() {
     element = compile(element)(rootScope);
     rootScope.$digest();
     expect(element.attr('ng-notice')).toEqual('value');
-  });
-
-  it('should set notification value on rootScope to nil',function(){
-    rootScope.notification = 'something';
-    element = '<div ng-notice></div>';
-    element = compile(element)(rootScope);
-    rootScope.$digest();
-    expect(rootScope.notification).toEqual(null);
   });
 
 

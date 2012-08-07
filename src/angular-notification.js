@@ -2,29 +2,31 @@
 
 angular.module('Notification', []).factory('$flash', function($rootScope) {
     var service = {
-        notify : function(level, message, element){
-            
-          $rootScope.notification =  {
-              level: level,
-              message: message,
-              element: (element || 'default')
-          };
-          $rootScope.$emit("event:ngNotification");
-          }    
+        notify : function(level, message, element, callback){
+                   var notification =  {
+                     level: level,
+                     message: message,
+                     element: (element || 'default'),
+                     callback: callback
+                   };
+                   $rootScope.$emit("event:ngNotification", notification);
+                 }    
         };
     return service;
   }).directive('ngNotice', function($rootScope) {
-    noticeObject = {
+    var noticeObject = {
        replace: false,
        transclude: false,
        link: function (scope, element, attr){
-         $rootScope.$on("event:ngNotification", function(event){
-           if (attr.ngNotice == $rootScope.notification.element){  
-             element.html("<span class=\""+ $rootScope.notification.level +
-                          "\">" + $rootScope.notification.message + "</span>");
+         $rootScope.$on("event:ngNotification", function(event, notification){
+           if (attr.ngNotice == notification.element){  
+             element.html("<span class=\""+ notification.level +
+                          "\">" + notification.message + "</span>");
+             if (typeof notification.callback === 'function'){
+               notification.callback();
+             }
            }
          });
-         $rootScope.notification = null;
          element.attr('ng-notice',(attr.ngNotice || 'default'));
        }
     };
