@@ -1,17 +1,9 @@
 'use strict';
 
 angular.module('Notification', []).factory('$flash', function($rootScope) {
-    var service = {
-        notify : function(level, message, element, callback){
-                   var notification =  {
-                     level: level,
-                     message: message,
-                     element: (element || 'default'),
-                     callback: callback
-                   };
-                   $rootScope.$emit("event:ngNotification", notification);
-                 }    
-        };
+    var service = function(options){
+                    $rootScope.$emit("event:ngNotification", options);
+                  }    
     return service;
   }).directive('ngNotice', function($rootScope) {
     var noticeObject = {
@@ -19,15 +11,28 @@ angular.module('Notification', []).factory('$flash', function($rootScope) {
        transclude: false,
        link: function (scope, element, attr){
          $rootScope.$on("event:ngNotification", function(event, notification){
-           if (attr.ngNotice == notification.element){  
-             element.html("<span class=\""+ notification.level +
-                          "\">" + notification.message + "</span>");
-             if (typeof notification.callback === 'function'){
-               notification.callback();
+           if (attr.ngNotice == notification.element){
+             var message = "<div class=\""+ notification.level + "\">" + 
+                        notification.message + 
+                        "</div>";
+             if (typeof notification.before === 'function'){
+               notification.before(element);
+             }
+             switch (notification.method){
+               case 'append':
+                 element.append(message);
+                 break;
+               case 'prepend':
+                 element.prepend(message);
+                 break;
+               default:
+                 element.html(message);
+             }
+             if (typeof notification.after === 'function'){
+               notification.after(element);
              }
            }
          });
-         element.attr('ng-notice',(attr.ngNotice || 'default'));
        }
     };
     return noticeObject;  
