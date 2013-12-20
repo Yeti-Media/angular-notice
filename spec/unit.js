@@ -1,7 +1,7 @@
 describe("$flash", function() {
   var rootScope;
   var flash;
-  var $injector = angular.injector(['ng', 'Notification']);
+  var $injector = angular.injector(['ng', 'ngNotification']);
 
   beforeEach(function(){
     $injector.invoke(function($rootScope, $flash){
@@ -28,7 +28,7 @@ describe("ngNotice", function() {
   var compile;
   var flash;
   var element;
-  var $injector = angular.injector(['ng', 'Notification']);
+  var $injector = angular.injector(['ng', 'ngNotification']);
 
   beforeEach(function(){
     $injector.invoke(function($rootScope, $compile, $flash){

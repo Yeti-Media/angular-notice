@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Notification', []).factory('$flash', function($rootScope) {
+angular.module('ngNotification', []).factory('$flash', function($rootScope) {
     var service = function(options){
                     $rootScope.$emit("event:ngNotification", options);
                   }    
