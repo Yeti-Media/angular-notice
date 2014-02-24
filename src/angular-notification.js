@@ -8,7 +8,7 @@ angular.module('ngNotification', []).factory('$flash', function($rootScope) {
   }).directive('ngNotice', function($rootScope) {
     var noticeObject = {
        replace: false,
-       transclude: false,
+       //transclude: false,
        link: function (scope, element, attr){
          $rootScope.$on("event:ngNotification", function(event, notification){
            if (attr.ngNotice == notification.element){
